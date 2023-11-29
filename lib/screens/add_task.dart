@@ -118,7 +118,7 @@ class AddTask extends StatelessWidget {
           TextButton(
               onPressed: () async {
                 await todoProvider.addDB();
-                await todoProvider.getDBdata();
+                // await todoProvider.getDBdata();
                 if (context.mounted) {
                   MyMessageHelper.snackBar(context,
                       message: 'Task Successfully Added');

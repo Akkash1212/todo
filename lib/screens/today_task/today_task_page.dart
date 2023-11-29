@@ -25,65 +25,78 @@ class TodayTask extends StatelessWidget {
     );
   }
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final todayTaskProvider = Provider.of<TodoProvider>(context);
 
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        key: scaffoldKey,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: AKColors.kMainColor,
-          onPressed: () {
-            _addTaskBottomSheet(context);
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => AddTask(),
-            //   ),
-            //);
-          },
-          child: Icon(
-            Icons.add,
-            size: 40,
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      // key: scaffoldKey,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AKColors.kMainColor,
+        onPressed: () {
+          _addTaskBottomSheet(context);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => AddTask(),
+          //   ),
+          //);
+        },
+        child: Icon(
+          Icons.add,
+          size: 40,
         ),
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          leading: Icon(
-            Icons.menu,
-            size: 30,
-            color: AKColors.kSecondaryColor,
-          ),
-          title: Text(
-            'Today Task ${todayTaskProvider.pickedDate}',
-            style: TextStyle(
-                color: AKColors.kMainColor,
-                fontSize: 28,
-                fontWeight: FontWeight.bold),
-          ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: Icon(
+          Icons.menu,
+          size: 30,
+          color: AKColors.kSecondaryColor,
         ),
-        body: Column(
+        title: Text(
+          'Today Task ${todayTaskProvider.pickedDate}',
+          style: TextStyle(
+              color: AKColors.kMainColor,
+              fontSize: 28,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                  child: StreamBuilder<QuerySnapshoty>(
-                      stream: stream, builder: builder)
-                  //
-                  //     Column(
-                  //     children: getDataList
-                  //         .map(
-                  //         (e) => TaskTail(task: e.task, endDate: e.endDate))
-                  //     .toList(),
-                  // ),
+              child: StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance.collection('Task').snapshots(),
+                builder: (_, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    final docs = snapshot.data!.docs;
+                    return ListView(
+                        children: docs.map((e) {
+                      Map<String, dynamic> data =
+                          e.data() as Map<String, dynamic>;
 
-                  ),
+                      Map<String, dynamic> taskData = {
+                        ...data,
+                        "docId": e.id,
+                      };
+
+                      return TaskTail(dataModel: DataModel.fromMap(taskData));
+                    }).toList());
+                  }
+                },
+              ),
             ),
             Container(
               height: 50,

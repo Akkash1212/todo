@@ -9,9 +9,9 @@ List<DataModel> getDataList = [];
 final fs = FirebaseFirestore.instance;
 
 class TodoProvider extends ChangeNotifier {
-  TodoProvider() {
-    getDBdata();
-  }
+  // TodoProvider() {
+  //   getDBdata();
+  // }
   DateTime todayDate = DateTime.now();
   DateTime pickedDate = DateTime.now();
   changePickedDate(DateTime? endDate) {
@@ -38,18 +38,18 @@ class TodoProvider extends ChangeNotifier {
     dateReset();
   }
 
-  getDBdata() async {
-    final getdata = await fs.collection('todo').get();
-    getDataList = [];
-
-    for (var datas in getdata.docs) {
-      print(datas.data());
-
-      getDataList.add(
-        DataModel.fromMap({...datas.data(), 'id': datas.id}),
-      );
-    }
-
-    notifyListeners();
-  }
+  // getDBdata() async {
+  //   final getdata = await fs.collection('todo').get();
+  //   getDataList = [];
+  //
+  //   for (var datas in getdata.docs) {
+  //     print(datas.data());
+  //
+  //     getDataList.add(
+  //       DataModel.fromMap({...datas.data(), 'id': datas.id}),
+  //     );
+  //   }
+  //
+  //   notifyListeners();
+  // }
 }

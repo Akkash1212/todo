@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todo/constant/ak_colors.dart';
 
-class TaskTail extends StatefulWidget {
-  TaskTail(
-      {super.key,
-      required this.task,
-      required this.endDate,
-      this.isChecked = false});
-  final String task;
-  final String endDate;
-  bool isChecked;
+import 'model.dart';
 
-  @override
-  State<TaskTail> createState() => _TaskTailState();
-}
+class TaskTail extends StatelessWidget {
+  const TaskTail({super.key, required this.dataModel});
+  final DataModel dataModel;
 
-class _TaskTailState extends State<TaskTail> {
-  bool get isChecked => widget.isChecked;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,17 +29,18 @@ class _TaskTailState extends State<TaskTail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.task,
+                    dataModel.task,
                     style: TextStyle(
                         fontSize: 22,
-                        color: isChecked
+                        color: dataModel.status
                             ? AKColors.kSecondaryColor
                             : AKColors.kMainColor,
-                        decoration:
-                            isChecked ? TextDecoration.lineThrough : null),
+                        decoration: dataModel.status
+                            ? TextDecoration.lineThrough
+                            : null),
                   ),
                   Text(
-                    widget.endDate,
+                    dataModel.endDate,
                     style: TextStyle(
                         fontSize: 18, color: AKColors.kSecondaryColor),
                   ),
@@ -63,15 +54,14 @@ class _TaskTailState extends State<TaskTail> {
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               child: IconButton(
                 onPressed: () {
-                  widget.isChecked = !widget.isChecked;
-                  setState(() {});
+                  dataModel.status = !dataModel.status;
                 },
                 splashRadius: 20,
                 icon: Icon(
-                  isChecked
+                  dataModel.status
                       ? Icons.check_box_outlined
                       : Icons.check_box_outline_blank,
-                  color: isChecked
+                  color: dataModel.status
                       ? AKColors.kSecondaryColor
                       : AKColors.kMainColor,
                 ),
