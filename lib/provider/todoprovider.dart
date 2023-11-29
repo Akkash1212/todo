@@ -46,7 +46,7 @@ class TodoProvider extends ChangeNotifier {
       print(datas.data());
 
       getDataList.add(
-        DataModel.fromMap(datas.data()),
+        DataModel.fromMap({...datas.data(), 'id': datas.id}),
       );
     }
 

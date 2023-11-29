@@ -33,6 +33,7 @@ class TodayTask extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         key: scaffoldKey,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
@@ -72,26 +73,17 @@ class TodayTask extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        todayTaskProvider.getDBdata();
-                      },
-                      child: Text('Get'),
-                    ),
-                    Column(
-                      children: getDataList
-                          .map(
-                              (e) => TaskTail(task: e.task, endDate: e.endDate))
-                          .toList(),
-                    ),
-                  ],
-                ),
-              ),
+                  child: StreamBuilder<QuerySnapshoty>(
+                      stream: stream, builder: builder)
+                  //
+                  //     Column(
+                  //     children: getDataList
+                  //         .map(
+                  //         (e) => TaskTail(task: e.task, endDate: e.endDate))
+                  //     .toList(),
+                  // ),
+
+                  ),
             ),
             Container(
               height: 50,
