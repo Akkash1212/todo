@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../helper/date_helper.dart';
 import '../screens/today_task/model.dart';
 
-final TextEditingController taskcontroller = TextEditingController();
 List<DataModel> getDataList = [];
 final fs = FirebaseFirestore.instance;
 
@@ -25,17 +24,8 @@ class TodoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addDB() {
-    Map<String, dynamic> addTask = {
-      'task': '${taskcontroller.text}',
-      'date': DateHelper.ddMMyyyy(date: todayDate),
-      'endDate': DateHelper.ddMMyyyy(date: pickedDate),
-      'status': false
-    };
-    print(addTask);
-    FirebaseFirestore.instance.collection('todo').add(addTask);
-    taskcontroller.clear();
-    dateReset();
+  addDB(Map<String, dynamic> addData) {
+    FirebaseFirestore.instance.collection('todo').add(addData);
   }
 
   // getDBdata() async {

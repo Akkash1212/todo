@@ -1,7 +1,7 @@
 class DataModel {
   String task;
-  String date;
-  String endDate;
+  DateTime date;
+  DateTime endDate;
   bool status;
   String id;
 
@@ -12,12 +12,14 @@ class DataModel {
       this.status = false,
       required this.id});
   factory DataModel.fromMap(Map data) {
-    print(data);
+    DateTime date = DateTime.parse(data['date']);
+    DateTime endDate = DateTime.parse(data['endDate']);
+
     return DataModel(
-      id: data['id'],
+      id: data['docId'],
       task: data['task'],
-      date: data['date'],
-      endDate: data['endDate'],
+      date: date,
+      endDate: endDate,
       status: data['status'],
     );
   }

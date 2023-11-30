@@ -10,6 +10,7 @@ import '../helper/date_helper.dart';
 
 class AddTask extends StatelessWidget {
   AddTask({super.key});
+  final TextEditingController taskcontroller = TextEditingController();
 
   Future<DateTime?> myDatePicker(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -117,11 +118,20 @@ class AddTask extends StatelessWidget {
           ),
           TextButton(
               onPressed: () async {
-                await todoProvider.addDB();
+                Map<String, dynamic> addTask = {
+                  'task': '${taskcontroller.text}',
+                  'date': DateTime.now(),
+                  'endDate': todoProvider.pickedDate,
+                  'status': false
+                };
+                await todoProvider.addDB(addTask);
                 // await todoProvider.getDBdata();
                 if (context.mounted) {
                   MyMessageHelper.snackBar(context,
                       message: 'Task Successfully Added');
+                  taskcontroller.clear();
+                  todoProvider.dateReset();
+
                   Navigator.pop(context);
                 }
               },

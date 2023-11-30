@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/constant/ak_colors.dart';
@@ -60,12 +61,22 @@ class TodayTask extends StatelessWidget {
           color: AKColors.kSecondaryColor,
         ),
         title: Text(
-          'Today Task ${todayTaskProvider.pickedDate}',
+          'Today Task ',
           style: TextStyle(
               color: AKColors.kMainColor,
               fontSize: 28,
               fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              icon: Icon(
+                Icons.logout,
+                color: AKColors.kMainColor,
+              ))
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -73,8 +84,10 @@ class TodayTask extends StatelessWidget {
           children: [
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream:
-                    FirebaseFirestore.instance.collection('Task').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('todo')
+                    .orderBy('endDate')
+                    .snapshots(),
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -82,15 +95,21 @@ class TodayTask extends StatelessWidget {
                     );
                   } else {
                     final docs = snapshot.data!.docs;
+                    print(docs);
                     return ListView(
                         children: docs.map((e) {
                       Map<String, dynamic> data =
                           e.data() as Map<String, dynamic>;
+                      Timestamp endDate = data['endDate'];
+                      Timestamp date = data['date'];
 
                       Map<String, dynamic> taskData = {
                         ...data,
                         "docId": e.id,
+                        "endDate": endDate.toDate().toString(),
+                        "date": date.toDate().toString(),
                       };
+                      print(taskData);
 
                       return TaskTail(dataModel: DataModel.fromMap(taskData));
                     }).toList());

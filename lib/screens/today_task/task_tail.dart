@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/constant/ak_colors.dart';
+import 'package:todo/helper/date_helper.dart';
 
 import 'model.dart';
 
@@ -40,7 +42,7 @@ class TaskTail extends StatelessWidget {
                             : null),
                   ),
                   Text(
-                    dataModel.endDate,
+                    DateHelper.ddMMyyyy(date: dataModel.endDate),
                     style: TextStyle(
                         fontSize: 18, color: AKColors.kSecondaryColor),
                   ),
@@ -55,6 +57,10 @@ class TaskTail extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   dataModel.status = !dataModel.status;
+                  FirebaseFirestore.instance
+                      .collection('todo')
+                      .doc(dataModel.id)
+                      .update({"status": !dataModel.status});
                 },
                 splashRadius: 20,
                 icon: Icon(
