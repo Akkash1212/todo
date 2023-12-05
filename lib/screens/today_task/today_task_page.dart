@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/constant/ak_colors.dart';
 import 'package:todo/helper/date_helper.dart';
+import 'package:todo/main.dart';
 import 'package:todo/provider/todoprovider.dart';
 import 'package:todo/screens/add_task.dart';
 
@@ -30,7 +31,7 @@ class TodayTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todayTaskProvider = Provider.of<TodoProvider>(context);
+    final todoProvider = Provider.of<TodoProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -75,7 +76,7 @@ class TodayTask extends StatelessWidget {
               icon: Icon(
                 Icons.logout,
                 color: AKColors.kMainColor,
-              ))
+              )),
         ],
       ),
       body: SafeArea(
@@ -87,6 +88,7 @@ class TodayTask extends StatelessWidget {
                 stream: FirebaseFirestore.instance
                     .collection('todo')
                     .orderBy('endDate')
+                    .where('email', isEqualTo: '${auth.currentUser?.email}')
                     .snapshots(),
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {

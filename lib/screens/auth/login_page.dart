@@ -1,10 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+import 'package:todo/common_widgets/login_textField.dart';
+import 'package:todo/constant/my_firebase_exceptions.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+import '../../constant/ak_colors.dart';
+
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
+  bool emailValue = true;
+
+  bool passwordValue = true;
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +32,40 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                    labelText: 'Email', hintText: 'Enter a Email Id'),
+              CircleAvatar(
+                backgroundColor: AKColors.kMainColor,
+                radius: 70,
+                child: Icon(
+                  Icons.person,
+                  size: 80,
+                  color: Colors.white,
+                ),
               ),
               SizedBox(
                 height: 10,
               ),
-              TextField(
+              LoginTextField(
+                controller: emailController,
+                label: 'Email',
+                hintText: 'Enter a Email Id',
+                isError: !emailValue,
+                onchange: (value) {
+                  emailValue = true;
+                  setState(() {});
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              LoginTextField(
                 controller: passwordController,
-                decoration: InputDecoration(
-                    labelText: 'Password', hintText: 'Enter a Password'),
+                label: "Password",
+                hintText: 'Enter a Password',
+                isError: !passwordValue,
+                onchange: (value) {
+                  passwordValue = true;
+                  setState(() {});
+                },
               ),
               SizedBox(
                 height: 20,
@@ -38,6 +77,10 @@ class LoginPage extends StatelessWidget {
                     width: 30,
                   ),
                   ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(AKColors.kMainColor),
+                      ),
                       onPressed: () async {
                         final auth = FirebaseAuth.instance;
                         try {
@@ -46,12 +89,30 @@ class LoginPage extends StatelessWidget {
                               password: passwordController.text);
                         } on FirebaseAuthException catch (e) {
                           print(e.message);
+                          print(e.code);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          if (e.code == MyFirebaseException.invalidEmail) {
+                            emailValue = false;
+                            setState(() {});
+                          }
+                          if (e.code == MyFirebaseException.weakPassword) {
+                            passwordValue = false;
+                          }
+                          if (e.code == MyFirebaseException.emailExist) {
+                            VxToast.show(context, msg: 'Email Exist Alredy');
+                          }
                         }
-                        emailController.clear();
-                        passwordController.clear();
+                        // emailController.clear();
+                        // passwordController.clear();
                       },
-                      child: Text('signup')),
+                      child: Text(
+                        'signup',
+                      )),
                   ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(AKColors.kMainColor),
+                      ),
                       onPressed: () async {
                         final auth = FirebaseAuth.instance;
                         try {
@@ -60,11 +121,28 @@ class LoginPage extends StatelessWidget {
                               password: passwordController.text);
                         } on FirebaseAuthException catch (e) {
                           print(e.message);
+                          print(e.code);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          if (e.code == MyFirebaseException.invalidEmail) {
+                            emailValue = false;
+                            setState(() {});
+                          }
+                          if (e.code == MyFirebaseException.weakPassword) {
+                            passwordValue = false;
+                            setState(() {});
+                          }
+                          if (e.code == MyFirebaseException.invalidCredential) {
+                            VxToast.show(context,
+                                msg:
+                                    '${MyFirebaseException.invalidCredential}Either Email or Password ');
+                          }
                         }
                         emailController.clear();
                         passwordController.clear();
                       },
-                      child: Text('Login')),
+                      child: Text(
+                        'Login',
+                      )),
                   SizedBox(
                     width: 30,
                   ),

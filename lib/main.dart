@@ -31,10 +31,12 @@ class MyApp extends StatelessWidget {
       ],
       child: ScreenUtilInit(
           designSize: const Size(1080, 2340),
+          minTextAdapt: true,
+          splitScreenMode: true,
           builder: (_, child) {
             return MaterialApp(debugShowCheckedModeBanner: false, home: child);
           },
-          child: StreamBuilder(
+          child: StreamBuilder<User?>(
             stream: auth.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {

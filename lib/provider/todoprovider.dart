@@ -28,6 +28,18 @@ class TodoProvider extends ChangeNotifier {
     FirebaseFirestore.instance.collection('todo').add(addData);
   }
 
+  toggleComplete({required DataModel dataModel}) {
+    dataModel.status = !dataModel.status;
+    fs
+        .collection('todo')
+        .doc(dataModel.id)
+        .update({"status": !dataModel.status});
+  }
+
+  deleteTask({required DataModel dataModel}) {
+    fs.collection('todo').doc(dataModel.id).delete();
+  }
+
   // getDBdata() async {
   //   final getdata = await fs.collection('todo').get();
   //   getDataList = [];
